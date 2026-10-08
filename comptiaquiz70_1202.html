@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CompTIA A+ 220-1202 Practice Exam</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.5;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #1e293b;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  header {
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    padding: 24px;
+    text-align: center;
+  }
+  header h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  header p { font-size: 0.9rem; opacity: 0.9; }
+  .progress-bar {
+    height: 6px;
+    background: #0f172a;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    transition: width 0.3s ease;
+  }
+  .stats {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: #0f172a;
+    font-size: 0.85rem;
+    color: #94a3b8;
+  }
+  .stats span strong { color: #e2e8f0; }
+  .question-area { padding: 28px; }
+  .question-num {
+    color: #60a5fa;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .question-text {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #f1f5f9;
+  }
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice {
+    background: #334155;
+    border: 2px solid #475569;
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 1rem;
+    color: #e2e8f0;
+    text-align: left;
+  }
+  .choice:hover:not(.locked) {
+    background: #475569;
+    border-color: #60a5fa;
+    transform: translateX(4px);
+  }
+  .choice.correct {
+    background: #14532d;
+    border-color: #22c55e;
+    color: #bbf7d0;
+  }
+  .choice.wrong {
+    background: #7f1d1d;
+    border-color: #ef4444;
+    color: #fecaca;
+  }
+  .choice.locked { cursor: default; }
+  .choice .label {
+    display: inline-block;
+    font-weight: 700;
+    margin-right: 10px;
+    color: #94a3b8;
+  }
+  .choice.correct .label { color: #4ade80; }
+  .choice.wrong .label { color: #f87171; }
+  .explanation {
+    margin-top: 20px;
+    padding: 16px;
+    background: #0f172a;
+    border-left: 4px solid #60a5fa;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation h4 {
+    color: #60a5fa;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .explanation p { margin-bottom: 8px; color: #cbd5e1; }
+  .explanation .wrong-list { margin-top: 10px; }
+  .explanation .wrong-list li {
+    margin-left: 20px;
+    margin-bottom: 6px;
+    color: #94a3b8;
+    font-size: 0.9rem;
+  }
+  .explanation .wrong-list li strong { color: #f87171; }
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    padding: 0 28px 28px;
+    justify-content: flex-end;
+  }
+  button {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-next {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+  }
+  .btn-next:hover { opacity: 0.9; transform: translateY(-2px); }
+  .btn-next:disabled {
+    background: #334155;
+    color: #64748b;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-restart {
+    background: #475569;
+    color: #e2e8f0;
+  }
+  .btn-restart:hover { background: #64748b; }
+  .results { padding: 40px 28px; text-align: center; }
+  .results h2 { font-size: 1.8rem; margin-bottom: 12px; }
+  .score-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    margin: 24px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: conic-gradient(#22c55e var(--pct), #334155 0);
+    position: relative;
+  }
+  .score-circle::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    background: #1e293b;
+  }
+  .score-circle .pct, .score-circle .label {
+    position: relative;
+    z-index: 1;
+  }
+  .score-circle .pct { font-size: 2.5rem; font-weight: 700; color: #f1f5f9; }
+  .score-circle .label { font-size: 0.85rem; color: #94a3b8; }
+  .results .summary { margin: 20px 0; font-size: 1.1rem; color: #cbd5e1; }
+  .results .verdict {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+  .pass { color: #4ade80; }
+  .fail { color: #f87171; }
+  .hidden { display: none !important; }
+  @media (max-width: 600px) {
+    .question-area { padding: 20px; }
+    .btn-row { padding: 0 20px 20px; }
+    header h1 { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>CompTIA A+ 220-1202 Practice Exam</h1>
+    <p>70 questions • Instant feedback • Explanations included</p>
+  </header>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="stats">
+    <span>Question <strong id="qCurrent">1</strong> / <strong id="qTotal">70</strong></span>
+    <span>Score: <strong id="scoreDisplay">0</strong></span>
+  </div>
+
+  <div id="quizScreen">
+    <div class="question-area">
+      <div class="question-num" id="questionNum">Question 1</div>
+      <div class="question-text" id="questionText"></div>
+      <div class="choices" id="choices"></div>
+      <div class="explanation" id="explanation">
+        <h4>Correct Answer: <span id="correctAnswer"></span></h4>
+        <p id="whyCorrect"></p>
+        <div class="wrong-list" id="wrongList"></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-next" id="nextBtn" disabled>Next →</button>
+    </div>
+  </div>
+
+  <div id="resultsScreen" class="results hidden">
+    <h2>Exam Complete</h2>
+    <div class="score-circle" id="scoreCircle">
+      <div class="pct" id="finalPct">0%</div>
+      <div class="label">Score</div>
+    </div>
+    <div class="summary" id="finalSummary"></div>
+    <div class="verdict" id="finalVerdict"></div>
+    <button class="btn-restart" id="restartBtn">Restart Exam</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "1. A fleet of PCs is upgrading to Windows 11. One fails the check despite having an 8th Gen CPU and 16GB RAM. Why?",
+    choices: [
+      "TPM 2.0 is disabled in the UEFI",
+      "Secure Boot is disabled in the OS",
+      "The hard drive is exFAT",
+      "RAM does not meet requirements"
+    ],
+    correct: 0,
+    why: "Windows 11 requires TPM 2.0, Secure Boot capability, and UEFI firmware in addition to CPU/RAM. TPM 2.0 must be enabled in the firmware for the upgrade check to pass. This is the most common reason a supported CPU fails the check.",
+    wrong: [
+      "Secure Boot is disabled in the OS — Secure Boot is a UEFI/firmware setting, not an OS setting. You can't disable it 'in the OS.' This choice is technically nonsensical.",
+      "The hard drive is exFAT — Windows 11 requires the system drive be NTFS, but this is checked separately and wouldn't be the headline failure when TPM is the known requirement.",
+      "RAM does not meet requirements — 16GB far exceeds the 4GB minimum. This is factually false."
+    ]
+  },
+  {
+    q: "2. An administrator needs a script to run automatically every time a specific user logs in to Windows. Best tool?",
+    choices: ["Task Scheduler", "Group Policy Editor", "Registry Editor", "System Configuration"],
+    correct: 0,
+    why: "Task Scheduler has a built-in 'At log on' trigger that can be scoped to a specific user or group. It's the native, GUI-driven, and most flexible way to run a script at logon, and it survives reboots. It also lets you set conditions, delays, and run-as credentials.",
+    wrong: [
+      "Group Policy Editor — GPO logon scripts exist, but they're domain-wide or OU-wide, not per-specific-user on a single machine. GPO is heavier and requires a domain.",
+      "Registry Editor — The registry stores configuration data, not scheduled tasks. There is a legacy Run key, but it's not a scheduling tool and doesn't support triggers.",
+      "System Configuration — msconfig is for boot troubleshooting (Safe Boot, services, startup tab). It doesn't schedule anything."
+    ]
+  },
+  {
+    q: "3. A macOS user accidentally deleted a folder yesterday. They have a Time Machine backup. How to restore it?",
+    choices: [
+      "Open the Time Machine app and navigate to yesterday",
+      "Boot into Recovery Mode and restore the whole drive",
+      "Use Disk Utility to mount the snapshot",
+      "Use the Terminal restore command"
+    ],
+    correct: 0,
+    why: "Time Machine's GUI lets you 'travel back in time' through snapshots. You open the app (or click the menu bar icon), browse to the date, find the folder, and click Restore. It restores only what you select — perfect for a single deleted folder.",
+    wrong: [
+      "Boot into Recovery Mode and restore the whole drive — This wipes and restores everything, destroying any newer files. Massive overkill for one folder.",
+      "Use Disk Utility to mount the snapshot — Disk Utility is for repairing/erasing/partitioning disks, not for browsing Time Machine backups.",
+      "Use the Terminal restore command — Possible but unnecessarily complex; the GUI is the intended method."
+    ]
+  },
+  {
+    q: "4. A Linux admin wants file permissions: owner read/write/execute, group read/execute, others read. Command?",
+    choices: ["chmod 774", "chmod 754", "chmod 764", "chmod 755"],
+    correct: 1,
+    why: "Linux numeric permissions: r=4, w=2, x=1. Owner = rwx = 4+2+1 = 7. Group = r-x = 4+0+1 = 5. Others = r-- = 4+0+0 = 4. So the mode is 754.",
+    wrong: [
+      "chmod 774 — Others would get 7 (rwx), not r--. Wrong.",
+      "chmod 764 — Group would get 6 (rw-), not r-x. Wrong.",
+      "chmod 755 — Others would get 5 (r-x), not r--. Wrong."
+    ]
+  },
+  {
+    q: "5. A Windows 10 workstation has high CPU. Task Manager shows ntoskrnl.exe is causing the spike. What does this indicate?",
+    choices: [
+      "Third-party application loop",
+      "System is processing kernel-level tasks",
+      "Cryptocurrency miner",
+      "Windows Update installing patches"
+    ],
+    correct: 1,
+    why: "ntoskrnl.exe is the Windows NT kernel — the core of the OS. It handles memory management, process scheduling, driver I/O, and hardware abstraction. High CPU here means the kernel is busy doing legitimate system work (often driver-related or I/O-bound), not that a single app is looping.",
+    wrong: [
+      "Third-party application loop — That would show the app's own process name, not the kernel.",
+      "Cryptocurrency miner — Miners run as their own process (often disguised with random names). They don't masquerade as ntoskrnl.exe.",
+      "Windows Update installing patches — That shows up as TiWorker.exe or TrustedInstaller.exe, not the kernel."
+    ]
+  },
+  {
+    q: "6. A Windows 11 system takes five minutes to boot. Which tool is best to safely disable non-essential startup apps?",
+    choices: ["System Configuration", "Task Manager", "Services.msc", "Performance Monitor"],
+    correct: 1,
+    why: "Task Manager's Startup tab shows every app set to launch at boot, its impact rating, and a simple Enable/Disable toggle. It's the modern, safe, Microsoft-recommended tool for this.",
+    wrong: [
+      "System Configuration — msconfig can also disable startup items, but it's now primarily a boot troubleshooting tool. It's older and less user-friendly for this task.",
+      "Services.msc — Manages Windows services, not user startup apps. Disabling the wrong service can break the OS.",
+      "Performance Monitor — A monitoring tool; it doesn't manage startup at all."
+    ]
+  },
+  {
+    q: "7. Which macOS feature is used to centrally search for files, launch applications, and perform quick calculations?",
+    choices: ["Finder", "Mission Control", "Spotlight", "Launchpad"],
+    correct: 2,
+    why: "Spotlight (Cmd+Space) is macOS's universal search. It indexes files, emails, apps, and even does inline math (type '23*7' and it shows 161), unit conversions, and dictionary lookups.",
+    wrong: [
+      "Finder — The file browser. It has a search bar but isn't a launcher or calculator.",
+      "Mission Control — Manages open windows and desktops (like Exposé). No search.",
+      "Launchpad — A grid of installed apps only. No search or calculations."
+    ]
+  },
+  {
+    q: "8. Linux terminal: Find all files in the var/log directory containing the word 'error'. Which command?",
+    choices: [
+      "grep 'error' /var/log/*",
+      "find /var/log -name 'error'",
+      "cat /var/log search 'error'",
+      "ls -l /var/log/error"
+    ],
+    correct: 0,
+    why: "grep searches file contents for a pattern. grep 'error' /var/log/* searches every file in /var/log for the string 'error' and prints matching lines.",
+    wrong: [
+      "find /var/log -name 'error' — find -name searches filenames, not contents. It would look for a file literally named 'error.'",
+      "cat /var/log search 'error' — Invalid syntax. cat concatenates files; it doesn't search.",
+      "ls -l /var/log/error — Lists a single file named 'error.' Doesn't search anything."
+    ]
+  },
+  {
+    q: "9. Company requires legacy software that only runs on Win 7. Hardware is upgrading to Win 11. Best solution?",
+    choices: [
+      "Compatibility Mode",
+      "Hyper-V virtual machine",
+      "Install Win 7 dual-boot",
+      "Use a Type-1 hypervisor"
+    ],
+    correct: 1,
+    why: "Hyper-V (built into Windows 11 Pro/Enterprise) lets you run a full Windows 7 VM in isolation. The legacy app gets its native OS, and the host stays on supported Windows 11. This is the standard enterprise solution.",
+    wrong: [
+      "Compatibility Mode — Only adjusts minor version reporting for apps. It can't provide missing Win 7 system components.",
+      "Install Win 7 dual-boot — Win 7 is end-of-life and unsupported. New hardware often lacks Win 7 drivers, and dual-booting exposes the machine to unpatched vulnerabilities.",
+      "Use a Type-1 hypervisor — Type-1 (bare-metal) hypervisors like ESXi are for servers, not a single desktop. Hyper-V is the practical desktop answer."
+    ]
+  },
+  {
+    q: "10. User connecting to corporate Wi-Fi using certificate authentication keeps dropping. Most likely cause?",
+    choices: [
+      "Password expired",
+      "DHCP scope exhausted",
+      "Client system clock is incorrect",
+      "SSID is hidden"
+    ],
+    correct: 2,
+    why: "Certificates have validity periods (not before / not after). If the client's clock is wrong, the certificate appears expired or not-yet-valid, and the authentication handshake fails — causing repeated drops.",
+    wrong: [
+      "Password expired — Certificate auth doesn't use passwords.",
+      "DHCP scope exhausted — That prevents getting an IP in the first place; it wouldn't cause drops after connecting.",
+      "SSID is hidden — Hiding the SSID doesn't affect certificate validation."
+    ]
+  },
+  {
+    q: "11. Which built-in Windows command-line tool repairs corrupted system files using a cached copy?",
+    choices: ["chkdsk /f", "sfc /scannow", "dism /cleanup-image", "bootrec /fixmbr"],
+    correct: 1,
+    why: "System File Checker scans all protected Windows system files and replaces corrupted ones from a cached copy in %WinDir%\\System32\\dllcache (or the WinSxS store). This is exactly what the question describes.",
+    wrong: [
+      "chkdsk /f — Repairs disk/file system errors (bad sectors, lost clusters), not system files.",
+      "dism /cleanup-image — Repairs the Windows image (the source), but sfc is the direct file-repair tool. DISM is often run before sfc to fix the source.",
+      "bootrec /fixmbr — Repairs the Master Boot Record, not system files."
+    ]
+  },
+  {
+    q: "12. Android device needs remote wipe, app whitelisting, and mandatory screen locks. What to configure?",
+    choices: [
+      "Mobile Device Management (MDM)",
+      "Virtual Private Network (VPN)",
+      "Multi-Factor Authentication",
+      "Google Workspace"
+    ],
+    correct: 0,
+    why: "MDM solutions (Intune, Jamf, VMware Workspace ONE) centrally enforce policies: remote wipe, app whitelisting/blacklisting, mandatory screen locks, password complexity, encryption, etc.",
+    wrong: [
+      "Virtual Private Network (VPN) — Provides secure remote access only. No device management.",
+      "Multi-Factor Authentication — Adds login security. Doesn't manage devices.",
+      "Google Workspace — A productivity suite. It has some MDM-like features, but MDM is the dedicated category."
+    ]
+  },
+  {
+    q: "13. Where should a technician look FIRST to find the stop code for a Windows Blue Screen of Death (BSOD)?",
+    choices: [
+      "Application Logs",
+      "Device Manager",
+      "The Windows Minidump folder",
+      "The System32 directory"
+    ],
+    correct: 2,
+    why: "On BSOD, Windows writes a minidump file (default: C:\\Windows\\Minidump) containing the stop code, the faulting driver, and memory state. Tools like BlueScreenView or WinDbg read it.",
+    wrong: [
+      "Application Logs — Log app events only, not kernel crashes.",
+      "Device Manager — Manages hardware; no crash data.",
+      "The System32 directory — Contains system files, not crash logs."
+    ]
+  },
+  {
+    q: "14. Which Linux command allows a standard user to execute a command with root privileges?",
+    choices: ["su", "sudo", "root", "passwd"],
+    correct: 1,
+    why: "sudo (superuser do) lets a permitted user run a single command as root without needing the root password — they use their own password. It's the standard modern Linux approach.",
+    wrong: [
+      "su — Switches to another user (usually root), but requires the root password and gives a full root shell, not a single command.",
+      "root — Not a command; it's the superuser account.",
+      "passwd — Changes passwords."
+    ]
+  },
+  {
+    q: "15. A firewall needs to allow Remote Desktop Protocol (RDP) traffic. Which port must be opened?",
+    choices: ["Port 22", "Port 443", "Port 3389", "Port 8080"],
+    correct: 2,
+    why: "RDP uses TCP 3389 by default (and UDP 3389 for some features).",
+    wrong: [
+      "Port 22 — SSH.",
+      "Port 443 — HTTPS.",
+      "Port 8080 — Alternative HTTP/proxy."
+    ]
+  },
+  {
+    q: "16. Which command changes the owner of a file in Linux?",
+    choices: ["chmod", "chown", "passwd", "su"],
+    correct: 1,
+    why: "chown = change owner. It changes the user and/or group ownership of files.",
+    wrong: [
+      "chmod — Changes permissions (read/write/execute), not ownership.",
+      "passwd — Changes passwords.",
+      "su — Switches user."
+    ]
+  },
+  {
+    q: "17. Windows updates are failing to install. Which folder's contents should be deleted to clear the update cache?",
+    choices: ["System32", "SoftwareDistribution", "SysWOW64", "ProgramData"],
+    correct: 1,
+    why: "C:\\Windows\\SoftwareDistribution\\Download holds downloaded update files. If they're corrupted, updates fail. Stopping wuauserv, deleting the folder contents, and restarting the service is the standard fix.",
+    wrong: [
+      "System32 — Core OS files. Deleting them breaks Windows.",
+      "SysWOW64 — 32-bit compatibility layer. Not update cache.",
+      "ProgramData — Stores app data (not specifically Windows Update cache)."
+    ]
+  },
+  {
+    q: "18. Which Windows feature provides native full-disk encryption?",
+    choices: ["BitLocker", "Encrypting File System (EFS)", "FileVault", "LUKS"],
+    correct: 0,
+    why: "BitLocker encrypts entire volumes (OS drive, data drives) using AES. It's built into Windows Pro/Enterprise/Education.",
+    wrong: [
+      "Encrypting File System (EFS) — Encrypts individual files/folders, not the whole disk.",
+      "FileVault — macOS's full-disk encryption (not Windows).",
+      "LUKS — Linux's full-disk encryption (not Windows)."
+    ]
+  },
+  {
+    q: "19. A macOS application is completely frozen. Which keyboard shortcut forces the app to quit?",
+    choices: ["Ctrl + Alt + Delete", "Cmd + Option + Esc", "Cmd + Shift + Q", "Alt + F4"],
+    correct: 1,
+    why: "This opens the Force Quit Applications window, where you select the frozen app and click Force Quit.",
+    wrong: [
+      "Ctrl + Alt + Delete — Windows Secure Attention Sequence / Task Manager.",
+      "Cmd + Shift + Q — Logs out of macOS.",
+      "Alt + F4 — Closes the active window on Windows."
+    ]
+  },
+  {
+    q: "20. What is the minimum RAM requirement for a 64-bit Windows 11 installation?",
+    choices: ["2 GB", "4 GB", "8 GB", "16 GB"],
+    correct: 1,
+    why: "Microsoft's official minimum for Windows 11 (64-bit) is 4GB RAM.",
+    wrong: [
+      "2 GB — Windows 10 32-bit minimum.",
+      "8 GB — Recommended, not minimum.",
+      "16 GB — Recommended for heavier workloads, not minimum."
+    ]
+  },
+  {
+    q: "21. An attacker called the helpdesk claiming to be the CEO and demanded a password reset. Which attack type?",
+    choices: ["Spear Phishing", "Whaling", "Vishing", "Tailgating"],
+    correct: 2,
+    why: "Vishing = voice phishing. The attack is conducted over the phone.",
+    wrong: [
+      "Spear Phishing — Targeted email phishing.",
+      "Whaling — Email phishing targeting executives, but still email-based.",
+      "Tailgating — Physically following someone through a secure door."
+    ]
+  },
+  {
+    q: "22. CompTIA malware removal: What must be done IMMEDIATELY after identifying and researching symptoms?",
+    choices: ["Quarantine the infected systems", "Disable System Restore", "Update anti-malware", "Schedule scans"],
+    correct: 0,
+    why: "CompTIA's 7-step order is: (1) Investigate & verify, (2) Quarantine infected systems, (3) Disable System Restore, (4) Remediate (update AV, scan, remove), (5) Schedule scans & run updates, (6) Enable System Restore, (7) Educate the end user. Quarantine is step 2.",
+    wrong: [
+      "Disable System Restore — Step 3.",
+      "Update anti-malware — Part of step 4.",
+      "Schedule scans — Step 5."
+    ]
+  },
+  {
+    q: "23. A computer is infected with a rootkit hiding from standard antivirus. Best removal approach?",
+    choices: [
+      "Run scan in Safe Mode",
+      "Boot from an offline anti-malware USB",
+      "Delete system drivers",
+      "Perform System Restore"
+    ],
+    correct: 1,
+    why: "Rootkits hook into the running kernel and hide their files/processes from any AV running inside that OS. Booting from external media means the rootkit isn't loaded, so the scanner can see and remove it.",
+    wrong: [
+      "Run scan in Safe Mode — Rootkits can still load in Safe Mode and remain hidden.",
+      "Delete system drivers — Dangerous and likely to break Windows; doesn't reliably remove the rootkit.",
+      "Perform System Restore — May not remove the rootkit and could restore an infected state."
+    ]
+  },
+  {
+    q: "24. Which of the following is a core principle of the Zero Trust security model?",
+    choices: [
+      "Trust internal LAN devices",
+      "Verify explicitly and enforce least privilege",
+      "Require VPN for all users",
+      "MAC filtering on all switches"
+    ],
+    correct: 1,
+    why: "Zero Trust's motto is 'never trust, always verify.' Every access request is authenticated and authorized explicitly, and users get only the minimum access needed (least privilege). The network location (inside/outside) is irrelevant.",
+    wrong: [
+      "Trust internal LAN devices — The opposite of Zero Trust (that's the old perimeter model).",
+      "Require VPN for all users — A control, not a Zero Trust principle.",
+      "MAC filtering on all switches — A Layer 2 control; not a Zero Trust principle."
+    ]
+  },
+  {
+    q: "25. A user clicks a bank email link directing to a misspelled URL. Attack type?",
+    choices: ["Phishing", "Spoofing", "Man-in-the-Middle", "Ransomware"],
+    correct: 0,
+    why: "A deceptive email with a link to a fake (misspelled) site designed to steal credentials is classic phishing.",
+    wrong: [
+      "Spoofing — Impersonating a source (email address, IP), but the attack as described is phishing.",
+      "Man-in-the-Middle — Intercepting live communications, not sending lure emails.",
+      "Ransomware — Encrypts data for ransom; not link-based credential theft."
+    ]
+  },
+  {
+    q: "26. Donating old HR hard drives to a school. Most appropriate data destruction method?",
+    choices: ["Standard formatting", "Degaussing", "Cryptographic erase", "Physical destruction"],
+    correct: 3,
+    why: "HR drives contain highly sensitive PII. Once drives leave organizational control (donated), the only way to guarantee data is unrecoverable is to physically destroy them (shred/crush). This also removes liability.",
+    wrong: [
+      "Standard formatting — Data is easily recoverable with forensic tools.",
+      "Degaussing — Destroys the drive (so it can't be donated) and doesn't work on SSDs.",
+      "Cryptographic erase — Only works on self-encrypting drives and depends on proper key destruction; less universally reliable."
+    ]
+  },
+  {
+    q: "27. Best way to centrally prevent unauthorized USB flash drives on corporate workstations?",
+    choices: ["BIOS passwords", "Active Directory Group Policy", "Local Security Policy", "Antivirus controls"],
+    correct: 1,
+    why: "GPO can push a policy to all domain-joined machines at once, blocking or restricting removable storage via Computer Configuration > Administrative Templates > System > Removable Storage Access. It's central, scalable, and enforceable.",
+    wrong: [
+      "BIOS passwords — Per-machine, not central; also doesn't specifically block USB.",
+      "Local Security Policy — Per-machine only; doesn't scale.",
+      "Antivirus controls — Can help, but GPO is the standard central method for this."
+    ]
+  },
+  {
+    q: "28. Strongest physical security measure against tailgating into a secure server room?",
+    choices: ["Keycard reader", "Security guard", "Mantraps", "Biometric scanner"],
+    correct: 2,
+    why: "A mantrap (access control vestibule) is an interlocking double-door system. One door must close before the next opens, and only one person is allowed through at a time. This physically prevents tailgating.",
+    wrong: [
+      "Keycard reader — One person badges in; others can slip through behind them.",
+      "Security guard — Effective but subject to human error/social engineering.",
+      "Biometric scanner — Strong authentication, but still allows tailgating behind an authorized person."
+    ]
+  },
+  {
+    q: "29. Browser homepage changed, constant pop-up ads even when closed. Most likely malware?",
+    choices: ["Ransomware", "Spyware", "Adware", "Trojan"],
+    correct: 2,
+    why: "Adware's defining behavior is forcing ads on the user — changing the homepage, injecting pop-ups, redirecting searches. It's often bundled with free software.",
+    wrong: [
+      "Ransomware — Encrypts files and demands payment.",
+      "Spyware — Secretly monitors activity; doesn't usually change the homepage.",
+      "Trojan — Disguised malware; not specifically ad-focused."
+    ]
+  },
+  {
+    q: "30. Attacker intercepts communication between user and bank by impersonating both endpoints. Attack type?",
+    choices: ["Man-in-the-Middle", "DDoS", "Brute Force", "SQL Injection"],
+    correct: 0,
+    why: "MITM sits between two parties, relaying (and possibly altering) traffic while each side thinks they're talking directly to the other.",
+    wrong: [
+      "DDoS — Floods a service to deny access.",
+      "Brute Force — Guesses credentials by trying many combinations.",
+      "SQL Injection — Injects malicious SQL into input fields to attack databases."
+    ]
+  },
+  {
+    q: "31. Which wireless security protocol uses SAE (Simultaneous Authentication of Equals) for high encryption?",
+    choices: ["WEP", "WPA", "WPA2", "WPA3"],
+    correct: 3,
+    why: "WPA3 introduced SAE (the 'Dragonfly' handshake) to replace WPA2's vulnerable 4-way handshake. SAE provides forward secrecy and resists offline dictionary attacks.",
+    wrong: [
+      "WEP — Broken, obsolete.",
+      "WPA — Uses TKIP; deprecated.",
+      "WPA2 — Uses AES/CCMP with the 4-way handshake; not SAE."
+    ]
+  },
+  {
+    q: "32. Smartphone runs hot, battery drain, sideloaded app. Best next step?",
+    choices: ["Replace battery", "Perform a factory reset", "Close background apps", "Update mobile OS"],
+    correct: 1,
+    why: "A sideloaded app from an untrusted source is a prime suspect for malware causing heat and battery drain. A factory reset wipes everything, removing the malicious app and restoring the device to a known-good state.",
+    wrong: [
+      "Replace battery — The battery isn't the root cause; malware is.",
+      "Close background apps — Won't remove malware.",
+      "Update mobile OS — Won't remove sideloaded malware."
+    ]
+  },
+  {
+    q: "33. Requiring an authenticator app code plus a password to access email. Security concept?",
+    choices: ["Single Sign-On", "Multi-Factor Authentication", "Role-Based Access Control", "Biometrics"],
+    correct: 1,
+    why: "MFA requires two or more different factor types. Password = something you know; authenticator code = something you have. Two different factors = MFA.",
+    wrong: [
+      "Single Sign-On — One login for multiple services (doesn't require MFA by itself).",
+      "Role-Based Access Control — Permissions based on role.",
+      "Biometrics — Physical traits (fingerprint, face); not an app code."
+    ]
+  },
+  {
+    q: "34. Urgent text message claims package failed delivery, click link to pay fee. Attack type?",
+    choices: ["Smishing", "Vishing", "Phishing", "Spam"],
+    correct: 0,
+    why: "Smishing = SMS phishing. The attack arrives via text message.",
+    wrong: [
+      "Vishing — Voice/phone phishing.",
+      "Phishing — General term, but typically email; the question specifies text.",
+      "Spam — Unwanted bulk messages; not necessarily deceptive."
+    ]
+  },
+  {
+    q: "35. Assigning file permissions to a security group rather than individual users follows which principle?",
+    choices: ["Least Privilege", "Role-Based Access Control", "Mandatory Access Control", "Separation of Duties"],
+    correct: 1,
+    why: "RBAC grants access based on roles/groups, not individuals. Users are placed in groups, and permissions are assigned to the group. This scales and simplifies administration.",
+    wrong: [
+      "Least Privilege — A principle (minimum necessary access), not the group-based model itself.",
+      "Mandatory Access Control — Uses labels/clearances (e.g., military).",
+      "Separation of Duties — Splits tasks among people to prevent fraud."
+    ]
+  },
+  {
+    q: "36. Which standard allows logging into multiple unrelated corporate services using one set of credentials?",
+    choices: ["RADIUS", "TACACS+", "Single Sign-On", "Local Auth"],
+    correct: 2,
+    why: "SSO authenticates the user once, then issues tokens that grant access to multiple independent services (email, HR portal, CRM, etc.).",
+    wrong: [
+      "RADIUS — Centralized auth for network access (Wi-Fi, VPN), not app SSO.",
+      "TACACS+ — Cisco device administration auth.",
+      "Local Auth — Per-device accounts; the opposite of SSO."
+    ]
+  },
+  {
+    q: "37. Employees must scan a physical badge AND enter a 4-digit PIN. Authentication type?",
+    choices: [
+      "Something you have and something you are",
+      "Something you know and something you are",
+      "Something you have and something you know",
+      "Biometric two-factor"
+    ],
+    correct: 2,
+    why: "Badge = something you have. PIN = something you know. Two different factor types.",
+    wrong: [
+      "Something you have and something you are — Badge + biometric. Wrong (PIN ≠ biometric).",
+      "Something you know and something you are — PIN + biometric. Wrong (badge ≠ biometric).",
+      "Biometric two-factor — Two biometric factors, e.g., fingerprint + face. Wrong."
+    ]
+  },
+  {
+    q: "38. Antivirus triggers a severe alert when opening a specific Excel file. Most likely malware type?",
+    choices: ["Boot sector virus", "Macro virus", "Keylogger", "Logic bomb"],
+    correct: 1,
+    why: "Office documents can contain macros (VBA code). A macro virus runs when the document is opened and can infect other documents. AV flags the file because of the malicious macro.",
+    wrong: [
+      "Boot sector virus — Infects the boot record, not Office files.",
+      "Keylogger — Records keystrokes; not tied to opening a file.",
+      "Logic bomb — Triggers on a condition (date, event); not document-based."
+    ]
+  },
+  {
+    q: "39. What is the primary purpose of a RADIUS server on a corporate network?",
+    choices: ["Centralized authentication", "Assigning IP addresses", "Filtering web traffic", "Hosting internal DNS"],
+    correct: 0,
+    why: "RADIUS (Remote Authentication Dial-In User Service) centralizes AAA — Authentication, Authorization, and Accounting — for network access (Wi-Fi, VPN, 802.1X).",
+    wrong: [
+      "Assigning IP addresses — That's DHCP.",
+      "Filtering web traffic — That's a proxy/firewall.",
+      "Hosting internal DNS — That's a DNS server."
+    ]
+  },
+  {
+    q: "40. Best method for disposing of highly classified printed paper documents?",
+    choices: ["Recycling bin", "Standard trash", "Physical destruction / Shredding", "Burning"],
+    correct: 2,
+    why: "Cross-cut or micro-cut shredding (or pulping/incineration by a certified vendor) renders documents unrecoverable. It's the standard for classified paper.",
+    wrong: [
+      "Recycling bin — Insecure; documents are intact.",
+      "Standard trash — Insecure.",
+      "Burning — Effective but often illegal/environmentally unsafe; shredding is the professional standard."
+    ]
+  },
+  {
+    q: "41. User receives BOOTMGR is missing error. First tool to use in Windows Recovery Environment?",
+    choices: ["bootrec /rebuildbcd", "sfc /scannow", "chkdsk /r", "diskpart"],
+    correct: 0,
+    why: "bootrec /rebuildbcd scans for Windows installations and rebuilds the Boot Configuration Data (BCD), which is what BOOTMGR relies on. It's the standard first fix for this error.",
+    wrong: [
+      "sfc /scannow — Repairs system files, not boot records.",
+      "chkdsk /r — Repairs disk errors; doesn't fix BCD.",
+      "diskpart — Manages partitions; doesn't repair boot."
+    ]
+  },
+  {
+    q: "42. Profile takes 10 mins to load, missing wallpaper, temporary profile notification. Most likely cause?",
+    choices: ["Password expired", "NTUSER.DAT is corrupted", "Domain controller offline", "Hard drive full"],
+    correct: 1,
+    why: "NTUSER.DAT is the user's registry hive. If it's corrupted, Windows can't load the profile and falls back to a temporary profile — which explains the long load, missing wallpaper, and the notification.",
+    wrong: [
+      "Password expired — Causes login failure, not temporary profile.",
+      "Domain controller offline — Can cause login delays, but not the temporary-profile message.",
+      "Hard drive full — Can cause general issues, not specifically a temporary profile."
+    ]
+  },
+  {
+    q: "43. Installed new video driver, reboot loops into Blue Screen of Death. Next step?",
+    choices: ["Reinstall Windows", "Boot Safe Mode and roll back driver", "Run SFC tool", "Memory diagnostic"],
+    correct: 1,
+    why: "Safe Mode loads only basic drivers (including the generic VGA driver), bypassing the bad video driver. From there, Device Manager lets you roll back to the previous working driver.",
+    wrong: [
+      "Reinstall Windows — Overkill; the driver is the issue.",
+      "Run SFC tool — Won't fix a bad third-party driver.",
+      "Memory diagnostic — Tests RAM, not driver issues."
+    ]
+  },
+  {
+    q: "44. Smartphone has no cellular connection after international travel. Wi-Fi works. Try FIRST?",
+    choices: ["Factory reset", "Replace SIM", "Toggle Airplane Mode", "Update firmware"],
+    correct: 2,
+    why: "Toggling Airplane Mode resets the cellular radio and forces it to re-register with the local carrier. This is the fastest, least invasive first step for 'no service after travel.'",
+    wrong: [
+      "Factory reset — Overkill; try simple fixes first.",
+      "Replace SIM — Unlikely to suddenly fail from travel.",
+      "Update firmware — Not the first step; radio re-registration is."
+    ]
+  },
+  {
+    q: "45. App crashes immediately upon opening in Windows 10. Event Viewer shows no errors. Next step?",
+    choices: ["Run the application as Administrator", "Reinstall OS", "Upgrade RAM", "Full antivirus scan"],
+    correct: 0,
+    why: "If no errors are logged, a common cause is insufficient permissions — the app can't write to a folder or registry key it needs. Running as Administrator often resolves this and confirms the cause.",
+    wrong: [
+      "Reinstall OS — Overkill.",
+      "Upgrade RAM — Not indicated by the symptoms.",
+      "Full antivirus scan — Not the first step."
+    ]
+  },
+  {
+    q: "46. Laptop cannot print to network printer, but others can. IP is correct, can ping printer. Check NEXT?",
+    choices: ["Print spooler service", "Printer physical cable", "Router firewall", "DNS records"],
+    correct: 0,
+    why: "If network connectivity is fine (ping works) but printing fails, the next local component is the Print Spooler service. If it's stopped or hung, jobs never reach the printer.",
+    wrong: [
+      "Printer physical cable — It's a network printer; no local cable.",
+      "Router firewall — Others can print, so the firewall isn't blocking.",
+      "DNS records — Ping by IP works, so DNS isn't the issue."
+    ]
+  },
+  {
+    q: "47. Certificate is invalid error on multiple secure websites (Google, Microsoft). Most likely cause?",
+    choices: [
+      "User local date and time are incorrect",
+      "Website servers down",
+      "DNS poisoned",
+      "Browser needs update"
+    ],
+    correct: 0,
+    why: "SSL/TLS certificates have validity windows. If the PC's clock is wrong (e.g., dead CMOS battery, wrong timezone), every HTTPS site appears to have an invalid certificate.",
+    wrong: [
+      "Website servers down — Would affect everyone, not just this user.",
+      "DNS poisoned — Would cause wrong sites, not cert errors on legitimate ones.",
+      "Browser needs update — Unlikely to cause cert errors across multiple major sites."
+    ]
+  },
+  {
+    q: "48. Mobile app crashes continuously every time launched. Phone was restarted. Instruct user to do NEXT?",
+    choices: ["Clear the app cache and data", "Hard reset phone", "Replace battery", "Disable Wi-Fi"],
+    correct: 0,
+    why: "Corrupted app cache/data is the most common cause of repeated crashes that survive a reboot. Clearing it resets the app to a clean state without losing the rest of the phone's data.",
+    wrong: [
+      "Hard reset phone — Overkill; try app-level fix first.",
+      "Replace battery — Not the cause.",
+      "Disable Wi-Fi — Not the cause."
+    ]
+  },
+  {
+    q: "49. Email links open Internet Explorer instead of Chrome. Where to fix this?",
+    choices: ["Internet Options", "Programs and Features", "Windows Settings - Default Apps", "Chrome Extensions"],
+    correct: 2,
+    why: "The Default Apps page in Windows Settings controls which browser handles HTTP/HTTPS links. Changing the default web browser here fixes the issue.",
+    wrong: [
+      "Internet Options — IE-specific settings; doesn't change the system default browser.",
+      "Programs and Features — Uninstall/change installed programs.",
+      "Chrome Extensions — Browser add-ons; unrelated to default app handling."
+    ]
+  },
+  {
+    q: "50. Home worker cannot access corporate intranet site. Home internet works fine. User likely forgot to?",
+    choices: ["Connect to the corporate VPN", "Update web browser", "Disable local firewall", "Flush DNS cache"],
+    correct: 0,
+    why: "Intranet resources are internal-only. From home, the user must connect to the corporate VPN to appear on the corporate network and reach intranet sites.",
+    wrong: [
+      "Update web browser — Not the issue; internet works.",
+      "Disable local firewall — Not the issue.",
+      "Flush DNS cache — Not the issue; the site is internal."
+    ]
+  },
+  {
+    q: "51. Mac user sees constant spinning beach ball. Activity Monitor shows high disk I/O, low CPU. Hardware cause?",
+    choices: ["Failing RAM", "Failing Hard Drive / SSD", "Overheating CPU", "Bad Logic Board"],
+    correct: 1,
+    why: "High disk I/O with low CPU means the system is waiting on storage. A failing drive/SSD causes repeated retries and stalls — the classic beach-ball scenario.",
+    wrong: [
+      "Failing RAM — Would show memory errors/panics, not high disk I/O.",
+      "Overheating CPU — Would show high CPU usage.",
+      "Bad Logic Board — Would cause broader, more varied failures."
+    ]
+  },
+  {
+    q: "52. Accidentally deleted important Exchange email, not in Deleted Items folder. Best recovery method?",
+    choices: ["Recover Deleted Items tool in Outlook", "Restore entire server", "Rebuild .ost file", "Permanently lost"],
+    correct: 0,
+    why: "Outlook's Recover Deleted Items tool retrieves items from the Recoverable Items folder (the 'dumpster'), where deleted items go after leaving Deleted Items. This is the standard first recovery method.",
+    wrong: [
+      "Restore entire server — Overkill and disruptive.",
+      "Rebuild .ost file — Doesn't recover deleted items.",
+      "Permanently lost — Not true; recoverable via the tool."
+    ]
+  },
+  {
+    q: "53. Monitor displays Input Not Supported after changing display resolution. How to revert?",
+    choices: [
+      "Boot into Safe Mode and change resolution",
+      "Replace monitor",
+      "Reinstall graphics driver",
+      "Press Alt+F4"
+    ],
+    correct: 0,
+    why: "Safe Mode uses a basic, universally supported resolution, so the monitor displays properly. From there you can change the resolution back to a supported value.",
+    wrong: [
+      "Replace monitor — The monitor is fine; the resolution is unsupported.",
+      "Reinstall graphics driver — Not the issue.",
+      "Press Alt+F4 — Closes windows; doesn't fix resolution."
+    ]
+  },
+  {
+    q: "54. Mobile device dies after 2 hours. Battery health is 55 percent. Best solution?",
+    choices: ["Close background apps", "Keep plugged in", "Replace the device battery", "Factory reset"],
+    correct: 2,
+    why: "Battery health of 55% means the battery has degraded significantly and can no longer hold a normal charge. Replacement is the correct fix.",
+    wrong: [
+      "Close background apps — Won't fix a physically degraded battery.",
+      "Keep plugged in — Not a solution.",
+      "Factory reset — Won't fix hardware."
+    ]
+  },
+  {
+    q: "55. User attempting to map a network drive gets Access Denied. Share allows Everyone. Issue?",
+    choices: [
+      "NTFS permissions are restricting access",
+      "Wrong IP address",
+      "Not on VPN",
+      "Cable unplugged"
+    ],
+    correct: 0,
+    why: "When share and NTFS permissions differ, the most restrictive wins. Even if the share allows Everyone, NTFS permissions on the folder can still deny access.",
+    wrong: [
+      "Wrong IP address — Would prevent connection entirely, not give Access Denied.",
+      "Not on VPN — Would prevent access entirely.",
+      "Cable unplugged — Would prevent connection."
+    ]
+  },
+  {
+    q: "56. Backup strategy: Full backup Sunday, then daily saves of ONLY data changed since the LAST backup. Type?",
+    choices: ["Incremental Backup", "Differential Backup", "Full Backup", "Synthetic Backup"],
+    correct: 0,
+    why: "An incremental backup captures only data changed since the last backup of any kind (full or incremental). That's exactly what the question describes.",
+    wrong: [
+      "Differential Backup — Captures changes since the last full backup (so each day's backup grows).",
+      "Full Backup — Backs up everything every time.",
+      "Synthetic Backup — Combines a full + incrementals into a new full without re-reading the source."
+    ]
+  },
+  {
+    q: "57. Finished implementing a solution. According to CompTIA methodology, what is the NEXT step?",
+    choices: ["Verify full system functionality", "Document findings", "Establish a theory", "Test the theory"],
+    correct: 0,
+    why: "CompTIA's troubleshooting order: (1) Identify, (2) Establish theory, (3) Test theory, (4) Plan/implement, (5) Verify full system functionality, (6) Document. Verification comes immediately after implementation.",
+    wrong: [
+      "Document findings — Step 6 (after verification).",
+      "Establish a theory — Step 2.",
+      "Test the theory — Step 3."
+    ]
+  },
+  {
+    q: "58. Script starts with #!/bin/bash. Which operating system is this intended for?",
+    choices: ["Windows", "macOS", "Linux", "Android"],
+    correct: 2,
+    why: "#!/bin/bash is a shebang telling the system to run the script with the Bash shell. Bash is the standard Linux shell.",
+    wrong: [
+      "Windows — Uses PowerShell (.ps1) or batch (.bat).",
+      "macOS — Uses zsh by default now; the shebang is Linux-oriented.",
+      "Android — Uses the Linux kernel but not typically Bash scripts."
+    ]
+  },
+  {
+    q: "59. User asks technician to violate Acceptable Use Policy (AUP). First step?",
+    choices: [
+      "Report to HR",
+      "Politely refuse and explain policy",
+      "Perform task but document",
+      "Ignore request"
+    ],
+    correct: 1,
+    why: "Technicians must follow policy and act professionally. The first step is to politely refuse and explain why the request violates the AUP.",
+    wrong: [
+      "Report to HR — Not the first step; refusal comes first (HR if it escalates).",
+      "Perform task but document — Violates policy.",
+      "Ignore request — Unprofessional; doesn't address the user."
+    ]
+  },
+  {
+    q: "60. Tracking hardware from purchase to destruction. Process?",
+    choices: ["Change Management", "Asset Management", "Incident Response", "Disaster Recovery"],
+    correct: 1,
+    why: "Asset management tracks the entire lifecycle of hardware — procurement, deployment, maintenance, and disposal.",
+    wrong: [
+      "Change Management — Controls changes to systems.",
+      "Incident Response — Handles security incidents.",
+      "Disaster Recovery — Restores operations after a disaster."
+    ]
+  },
+  {
+    q: "61. Script to automate Active Directory user creation. Best scripting language?",
+    choices: ["Python", "JavaScript", "PowerShell", "Bash"],
+    correct: 2,
+    why: "PowerShell has a built-in ActiveDirectory module (New-ADUser, etc.) and is Microsoft's native automation language for Windows/AD.",
+    wrong: [
+      "Python — General-purpose; can do it with modules but not native.",
+      "JavaScript — Web scripting.",
+      "Bash — Linux shell; not native to AD."
+    ]
+  },
+  {
+    q: "62. Chemical spill in data center. Which document for safe handling?",
+    choices: [
+      "Acceptable Use Policy",
+      "Material Safety Data Sheet (MSDS)",
+      "Service Level Agreement",
+      "Standard Operating Procedure"
+    ],
+    correct: 1,
+    why: "An MSDS (now also called SDS) lists a chemical's hazards, safe handling, PPE, first aid, and spill response. It's the required reference for chemical spills.",
+    wrong: [
+      "Acceptable Use Policy — User behavior rules.",
+      "Service Level Agreement — Service expectations.",
+      "Standard Operating Procedure — General procedures; not chemical-specific."
+    ]
+  },
+  {
+    q: "63. Server requires critical patch. Submitting rollout and rollback plans. Process?",
+    choices: ["Incident Management", "Change Management", "Asset Management", "Risk Management"],
+    correct: 1,
+    why: "Change management requires planning, approval, rollout, and rollback plans before changes are made — exactly what's described.",
+    wrong: [
+      "Incident Management — Handles incidents (outages, attacks).",
+      "Asset Management — Tracks assets.",
+      "Risk Management — Assesses/mitigates risk; broader than the change process."
+    ]
+  },
+  {
+    q: "64. Ransomware infection. Technician unplugs network cable. Which Incident Response step?",
+    choices: ["Identification", "Containment", "Eradication", "Recovery"],
+    correct: 1,
+    why: "Unplugging the cable stops the spread of the infection — that's containment. The IR order: Preparation → Identification → Containment → Eradication → Recovery → Lessons Learned.",
+    wrong: [
+      "Identification — Detecting/confirming the incident.",
+      "Eradication — Removing the threat.",
+      "Recovery — Restoring normal operations."
+    ]
+  },
+  {
+    q: "65. Legally required to keep financial records for seven years. Policy type?",
+    choices: [
+      "Acceptable Use Policy",
+      "Data Retention Policy",
+      "Incident Response Policy",
+      "Change Management"
+    ],
+    correct: 1,
+    why: "A data retention policy defines how long data must be kept and when it's destroyed, often to meet legal/regulatory requirements.",
+    wrong: [
+      "Acceptable Use Policy — User behavior.",
+      "Incident Response Policy — Incident handling.",
+      "Change Management — Change control."
+    ]
+  },
+  {
+    q: "66. Requiring all sensitive PII data to be categorized properly falls under?",
+    choices: ["Data classification", "Data destruction", "Data loss prevention", "Data retention"],
+    correct: 0,
+    why: "Data classification labels data by sensitivity (public, internal, confidential, restricted) to determine how it must be handled, stored, and protected.",
+    wrong: [
+      "Data destruction — Disposing of data.",
+      "Data loss prevention — Preventing leaks.",
+      "Data retention — How long to keep data."
+    ]
+  },
+  {
+    q: "67. Why take special care when disposing of old CRT monitors?",
+    choices: [
+      "Contain lead and lethal electric charge",
+      "Highly flammable",
+      "Sensitive user data",
+      "Dangerous radiation"
+    ],
+    correct: 0,
+    why: "CRTs contain lead in the glass and large capacitors that can hold a lethal electric charge even after being unplugged. They require special e-waste handling.",
+    wrong: [
+      "Highly flammable — Not the main concern.",
+      "Sensitive user data — CRTs don't store data.",
+      "Dangerous radiation — Not the primary disposal concern."
+    ]
+  },
+  {
+    q: "68. User is frustrated and yelling about a broken PC. First thing the technician should do?",
+    choices: ["Listen actively and remain calm", "Yell back", "Walk away", "Tell user to calm down"],
+    correct: 0,
+    why: "Professionalism: listen actively, stay calm, and de-escalate. This builds trust and lets you gather information to solve the problem.",
+    wrong: [
+      "Yell back — Unprofessional and escalates.",
+      "Walk away — Unprofessional.",
+      "Tell user to calm down — Often escalates the situation."
+    ]
+  },
+  {
+    q: "69. Which programming variable type would best represent a user's age?",
+    choices: ["String", "Boolean", "Integer", "Array"],
+    correct: 2,
+    why: "Age is a whole number, so Integer is the best type. It allows math and comparison operations.",
+    wrong: [
+      "String — Text; using it for age prevents numeric operations.",
+      "Boolean — True/False.",
+      "Array — A collection of values."
+    ]
+  },
+  {
+    q: "70. Which programming variable type would represent a True or False value?",
+    choices: ["String", "Boolean", "Integer", "Array"],
+    correct: 1,
+    why: "Boolean is the data type specifically for True/False values.",
+    wrong: [
+      "String — Text.",
+      "Integer — Whole numbers.",
+      "Array — A collection of values."
+    ]
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+const $ = id => document.getElementById(id);
+const qTotal = questions.length;
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildQuiz() {
+  return shuffle(questions).map(q => {
+    const indices = q.choices.map((_, i) => i);
+    const shuffled = shuffle(indices);
+    return {
+      q: q.q,
+      choices: shuffled.map(i => q.choices[i]),
+      correct: shuffled.indexOf(q.correct),
+      why: q.why,
+      wrong: q.wrong
+    };
+  });
+}
+
+let quizQuestions = buildQuiz();
+
+function render() {
+  answered = false;
+  const q = quizQuestions[current];
+  $('qCurrent').textContent = current + 1;
+  $('qTotal').textContent = qTotal;
+  $('scoreDisplay').textContent = score;
+  $('progressFill').style.width = ((current) / qTotal * 100) + '%';
+  $('questionNum').textContent = `Question ${current + 1} of ${qTotal}`;
+  $('questionText').textContent = q.q;
+
+  const choicesEl = $('choices');
+  choicesEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.choices.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.innerHTML = `<span class="label">${letters[i]}.</span>${choice}`;
+    btn.onclick = () => selectAnswer(i);
+    choicesEl.appendChild(btn);
+  });
+
+  $('explanation').classList.remove('show');
+  $('nextBtn').disabled = true;
+  $('nextBtn').textContent = current === qTotal - 1 ? 'Finish →' : 'Next →';
+}
+
+function selectAnswer(index) {
+  if (answered) return;
+  answered = true;
+  const q = quizQuestions[current];
+  const choiceEls = document.querySelectorAll('.choice');
+
+  choiceEls.forEach((el, i) => {
+    el.classList.add('locked');
+    if (i === q.correct) el.classList.add('correct');
+    else if (i === index) el.classList.add('wrong');
+  });
+
+  if (index === q.correct) score++;
+
+  $('correctAnswer').textContent = q.choices[q.correct];
+  $('whyCorrect').textContent = q.why;
+  const wrongList = $('wrongList');
+  wrongList.innerHTML = '';
+  if (q.wrong && q.wrong.length) {
+    const heading = document.createElement('h4');
+    heading.textContent = 'Why the other choices are wrong:';
+    heading.style.marginTop = '12px';
+    wrongList.appendChild(heading);
+    const ul = document.createElement('ul');
+    q.wrong.forEach(w => {
+      const li = document.createElement('li');
+      li.textContent = w;
+      ul.appendChild(li);
+    });
+    wrongList.appendChild(ul);
+  }
+  $('explanation').classList.add('show');
+
+  $('scoreDisplay').textContent = score;
+  $('nextBtn').disabled = false;
+  $('progressFill').style.width = ((current + 1) / qTotal * 100) + '%';
+}
+
+$('nextBtn').onclick = () => {
+  if (current < qTotal - 1) {
+    current++;
+    render();
+  } else {
+    showResults();
+  }
+};
+
+function showResults() {
+  $('quizScreen').classList.add('hidden');
+  $('resultsScreen').classList.remove('hidden');
+  const pct = Math.round((score / qTotal) * 100);
+  $('finalPct').textContent = pct + '%';
+  $('scoreCircle').style.setProperty('--pct', pct + '%');
+  $('finalSummary').textContent = `You scored ${score} out of ${qTotal} correct.`;
+  const verdict = $('finalVerdict');
+  if (pct >= 80) {
+    verdict.textContent = '🎉 Excellent! You are well prepared.';
+    verdict.className = 'verdict pass';
+  } else if (pct >= 70) {
+    verdict.textContent = '👍 Good job! A little more review and you\'ll be ready.';
+    verdict.className = 'verdict pass';
+  } else {
+    verdict.textContent = '📚 Keep studying — review the explanations and try again.';
+    verdict.className = 'verdict fail';
+  }
+}
+
+$('restartBtn').onclick = () => {
+  current = 0;
+  score = 0;
+  quizQuestions = buildQuiz();
+  $('resultsScreen').classList.add('hidden');
+  $('quizScreen').classList.remove('hidden');
+  render();
+};
+
+render();
+</script>
+</body>
+</html>
